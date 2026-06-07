@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "Z04W-LCdKrtGjx0Jg_Trg"
+uri = "file://artifacts/pocket-option-ai/src/assets/images/hero-robot.png"
+type = "image"
+title = "Dramatic AI trading robot"
