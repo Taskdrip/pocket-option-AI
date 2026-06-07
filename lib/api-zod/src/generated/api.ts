@@ -16,9 +16,6 @@ export const HealthCheckResponse = zod.object({
 })
 
 
-/**
- * @summary Register a new user
- */
 export const registerBodyPasswordMin = 6;
 
 export const registerBodyUsernameMin = 2;
@@ -32,9 +29,6 @@ export const RegisterBody = zod.object({
 })
 
 
-/**
- * @summary Login
- */
 export const LoginBody = zod.object({
   "email": zod.string().email(),
   "password": zod.string()
@@ -50,14 +44,13 @@ export const LoginResponse = zod.object({
   "botActive": zod.boolean(),
   "autoConfirm": zod.boolean(),
   "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 })
 })
 
 
-/**
- * @summary Get current user profile
- */
 export const GetMeResponse = zod.object({
   "id": zod.number(),
   "email": zod.string(),
@@ -66,13 +59,12 @@ export const GetMeResponse = zod.object({
   "botActive": zod.boolean(),
   "autoConfirm": zod.boolean(),
   "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 })
 
 
-/**
- * @summary Toggle bot on/off and auto-confirm
- */
 export const UpdateBotStatusBody = zod.object({
   "botActive": zod.boolean().optional(),
   "autoConfirm": zod.boolean().optional()
@@ -86,13 +78,30 @@ export const UpdateBotStatusResponse = zod.object({
   "botActive": zod.boolean(),
   "autoConfirm": zod.boolean(),
   "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 })
 
 
-/**
- * @summary Get current AI signal for an asset/timeframe
- */
+export const UpdatePocketOptionBody = zod.object({
+  "pocketOptionId": zod.string()
+})
+
+export const UpdatePocketOptionResponse = zod.object({
+  "id": zod.number(),
+  "email": zod.string(),
+  "username": zod.string(),
+  "credits": zod.number(),
+  "botActive": zod.boolean(),
+  "autoConfirm": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
 export const GetSignalQueryParams = zod.object({
   "asset": zod.coerce.string(),
   "timeframe": zod.coerce.string()
@@ -109,9 +118,6 @@ export const GetSignalResponse = zod.object({
 })
 
 
-/**
- * @summary List trade history for the current user
- */
 export const ListTradesResponseItem = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
@@ -125,9 +131,6 @@ export const ListTradesResponseItem = zod.object({
 export const ListTradesResponse = zod.array(ListTradesResponseItem)
 
 
-/**
- * @summary Execute a trade (deducts 1 credit)
- */
 export const ExecuteTradeBody = zod.object({
   "asset": zod.string(),
   "timeframe": zod.string(),
@@ -137,9 +140,6 @@ export const ExecuteTradeBody = zod.object({
 })
 
 
-/**
- * @summary Get trading statistics for current user
- */
 export const GetTradeStatsResponse = zod.object({
   "totalTrades": zod.number(),
   "wins": zod.number(),
@@ -149,9 +149,6 @@ export const GetTradeStatsResponse = zod.object({
 })
 
 
-/**
- * @summary List top-up requests for current user
- */
 export const ListTopupsResponseItem = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
@@ -160,24 +157,83 @@ export const ListTopupsResponseItem = zod.object({
   "usdAmount": zod.number(),
   "tonAmount": zod.number(),
   "txHash": zod.string(),
+  "currency": zod.string(),
   "status": zod.enum(['pending', 'approved', 'rejected']),
   "createdAt": zod.coerce.date()
 })
 export const ListTopupsResponse = zod.array(ListTopupsResponseItem)
 
 
-/**
- * @summary Submit a credit top-up request with TON transaction hash
- */
 export const CreateTopupBody = zod.object({
   "package": zod.enum(['100', '500', '1000']),
-  "txHash": zod.string()
+  "txHash": zod.string(),
+  "currency": zod.enum(['ton', 'usdt'])
 })
 
 
-/**
- * @summary Admin - list all pending top-up requests
- */
+export const AdminListUsersResponseItem = zod.object({
+  "id": zod.number(),
+  "email": zod.string(),
+  "username": zod.string(),
+  "credits": zod.number(),
+  "botActive": zod.boolean(),
+  "autoConfirm": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
+  "totalTrades": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+export const AdminListUsersResponse = zod.array(AdminListUsersResponseItem)
+
+
+export const AdminUpdateUserParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdminUpdateUserBody = zod.object({
+  "banned": zod.boolean().optional(),
+  "isAdmin": zod.boolean().optional()
+})
+
+export const AdminUpdateUserResponse = zod.object({
+  "id": zod.number(),
+  "email": zod.string(),
+  "username": zod.string(),
+  "credits": zod.number(),
+  "botActive": zod.boolean(),
+  "autoConfirm": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
+  "totalTrades": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
+export const AdminAdjustCreditsParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdminAdjustCreditsBody = zod.object({
+  "credits": zod.number()
+})
+
+export const AdminAdjustCreditsResponse = zod.object({
+  "id": zod.number(),
+  "email": zod.string(),
+  "username": zod.string(),
+  "credits": zod.number(),
+  "botActive": zod.boolean(),
+  "autoConfirm": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "banned": zod.boolean(),
+  "pocketOptionId": zod.string().nullable(),
+  "totalTrades": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
 export const AdminListTopupsResponseItem = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
@@ -188,15 +244,13 @@ export const AdminListTopupsResponseItem = zod.object({
   "usdAmount": zod.number(),
   "tonAmount": zod.number(),
   "txHash": zod.string(),
+  "currency": zod.string(),
   "status": zod.enum(['pending', 'approved', 'rejected']),
   "createdAt": zod.coerce.date()
 })
 export const AdminListTopupsResponse = zod.array(AdminListTopupsResponseItem)
 
 
-/**
- * @summary Admin - approve a top-up request and credit the user
- */
 export const ApproveTopupParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -209,6 +263,25 @@ export const ApproveTopupResponse = zod.object({
   "usdAmount": zod.number(),
   "tonAmount": zod.number(),
   "txHash": zod.string(),
+  "currency": zod.string(),
+  "status": zod.enum(['pending', 'approved', 'rejected']),
+  "createdAt": zod.coerce.date()
+})
+
+
+export const RejectTopupParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const RejectTopupResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "package": zod.string(),
+  "credits": zod.number(),
+  "usdAmount": zod.number(),
+  "tonAmount": zod.number(),
+  "txHash": zod.string(),
+  "currency": zod.string(),
   "status": zod.enum(['pending', 'approved', 'rejected']),
   "createdAt": zod.coerce.date()
 })

@@ -20,12 +20,16 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminUser,
+  AdminUserUpdate,
   AuthResponse,
   BotStatusUpdate,
+  CreditsAdjust,
   ErrorResponse,
   GetSignalParams,
   HealthStatus,
   LoginInput,
+  PocketOptionUpdate,
   RegisterInput,
   Signal,
   Topup,
@@ -134,9 +138,6 @@ export const getRegisterUrl = () => {
   return `/api/auth/register`
 }
 
-/**
- * @summary Register a new user
- */
 export const register = async (registerInput: RegisterInput, options?: RequestInit): Promise<AuthResponse> => {
 
   return customFetch<AuthResponse>(getRegisterUrl(),
@@ -183,10 +184,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type RegisterMutationBody = BodyType<RegisterInput>
     export type RegisterMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Register a new user
- */
-export const useRegister = <TError = ErrorType<ErrorResponse>,
+    export const useRegister = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof register>>, TError,{data: BodyType<RegisterInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof register>>,
@@ -205,9 +203,6 @@ export const getLoginUrl = () => {
   return `/api/auth/login`
 }
 
-/**
- * @summary Login
- */
 export const login = async (loginInput: LoginInput, options?: RequestInit): Promise<AuthResponse> => {
 
   return customFetch<AuthResponse>(getLoginUrl(),
@@ -254,10 +249,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type LoginMutationBody = BodyType<LoginInput>
     export type LoginMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Login
- */
-export const useLogin = <TError = ErrorType<ErrorResponse>,
+    export const useLogin = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof login>>,
@@ -276,9 +268,6 @@ export const getGetMeUrl = () => {
   return `/api/users/me`
 }
 
-/**
- * @summary Get current user profile
- */
 export const getMe = async ( options?: RequestInit): Promise<User> => {
 
   return customFetch<User>(getGetMeUrl(),
@@ -323,9 +312,6 @@ export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>
 export type GetMeQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary Get current user profile
- */
 
 export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = ErrorType<ErrorResponse>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -353,9 +339,6 @@ export const getUpdateBotStatusUrl = () => {
   return `/api/users/me/bot`
 }
 
-/**
- * @summary Toggle bot on/off and auto-confirm
- */
 export const updateBotStatus = async (botStatusUpdate: BotStatusUpdate, options?: RequestInit): Promise<User> => {
 
   return customFetch<User>(getUpdateBotStatusUrl(),
@@ -402,10 +385,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateBotStatusMutationBody = BodyType<BotStatusUpdate>
     export type UpdateBotStatusMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Toggle bot on/off and auto-confirm
- */
-export const useUpdateBotStatus = <TError = ErrorType<ErrorResponse>,
+    export const useUpdateBotStatus = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBotStatus>>, TError,{data: BodyType<BotStatusUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof updateBotStatus>>,
@@ -414,6 +394,71 @@ export const useUpdateBotStatus = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUpdateBotStatusMutationOptions(options));
+    }
+
+export const getUpdatePocketOptionUrl = () => {
+
+
+
+
+  return `/api/users/me/pocket-option`
+}
+
+export const updatePocketOption = async (pocketOptionUpdate: PocketOptionUpdate, options?: RequestInit): Promise<User> => {
+
+  return customFetch<User>(getUpdatePocketOptionUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      pocketOptionUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdatePocketOptionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePocketOption>>, TError,{data: BodyType<PocketOptionUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePocketOption>>, TError,{data: BodyType<PocketOptionUpdate>}, TContext> => {
+
+const mutationKey = ['updatePocketOption'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePocketOption>>, {data: BodyType<PocketOptionUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updatePocketOption(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePocketOptionMutationResult = NonNullable<Awaited<ReturnType<typeof updatePocketOption>>>
+    export type UpdatePocketOptionMutationBody = BodyType<PocketOptionUpdate>
+    export type UpdatePocketOptionMutationError = ErrorType<ErrorResponse>
+
+    export const useUpdatePocketOption = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePocketOption>>, TError,{data: BodyType<PocketOptionUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updatePocketOption>>,
+        TError,
+        {data: BodyType<PocketOptionUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdatePocketOptionMutationOptions(options));
     }
 
 export const getGetSignalUrl = (params: GetSignalParams,) => {
@@ -431,9 +476,6 @@ export const getGetSignalUrl = (params: GetSignalParams,) => {
   return stringifiedParams.length > 0 ? `/api/signals?${stringifiedParams}` : `/api/signals`
 }
 
-/**
- * @summary Get current AI signal for an asset/timeframe
- */
 export const getSignal = async (params: GetSignalParams, options?: RequestInit): Promise<Signal> => {
 
   return customFetch<Signal>(getGetSignalUrl(params),
@@ -478,9 +520,6 @@ export type GetSignalQueryResult = NonNullable<Awaited<ReturnType<typeof getSign
 export type GetSignalQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary Get current AI signal for an asset/timeframe
- */
 
 export function useGetSignal<TData = Awaited<ReturnType<typeof getSignal>>, TError = ErrorType<ErrorResponse>>(
  params: GetSignalParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSignal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -508,9 +547,6 @@ export const getListTradesUrl = () => {
   return `/api/trades`
 }
 
-/**
- * @summary List trade history for the current user
- */
 export const listTrades = async ( options?: RequestInit): Promise<Trade[]> => {
 
   return customFetch<Trade[]>(getListTradesUrl(),
@@ -555,9 +591,6 @@ export type ListTradesQueryResult = NonNullable<Awaited<ReturnType<typeof listTr
 export type ListTradesQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary List trade history for the current user
- */
 
 export function useListTrades<TData = Awaited<ReturnType<typeof listTrades>>, TError = ErrorType<ErrorResponse>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTrades>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -585,9 +618,6 @@ export const getExecuteTradeUrl = () => {
   return `/api/trades`
 }
 
-/**
- * @summary Execute a trade (deducts 1 credit)
- */
 export const executeTrade = async (tradeInput: TradeInput, options?: RequestInit): Promise<Trade> => {
 
   return customFetch<Trade>(getExecuteTradeUrl(),
@@ -634,10 +664,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type ExecuteTradeMutationBody = BodyType<TradeInput>
     export type ExecuteTradeMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Execute a trade (deducts 1 credit)
- */
-export const useExecuteTrade = <TError = ErrorType<ErrorResponse>,
+    export const useExecuteTrade = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof executeTrade>>, TError,{data: BodyType<TradeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof executeTrade>>,
@@ -656,9 +683,6 @@ export const getGetTradeStatsUrl = () => {
   return `/api/trades/stats`
 }
 
-/**
- * @summary Get trading statistics for current user
- */
 export const getTradeStats = async ( options?: RequestInit): Promise<TradeStats> => {
 
   return customFetch<TradeStats>(getGetTradeStatsUrl(),
@@ -703,9 +727,6 @@ export type GetTradeStatsQueryResult = NonNullable<Awaited<ReturnType<typeof get
 export type GetTradeStatsQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary Get trading statistics for current user
- */
 
 export function useGetTradeStats<TData = Awaited<ReturnType<typeof getTradeStats>>, TError = ErrorType<ErrorResponse>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTradeStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -733,9 +754,6 @@ export const getListTopupsUrl = () => {
   return `/api/topups`
 }
 
-/**
- * @summary List top-up requests for current user
- */
 export const listTopups = async ( options?: RequestInit): Promise<Topup[]> => {
 
   return customFetch<Topup[]>(getListTopupsUrl(),
@@ -780,9 +798,6 @@ export type ListTopupsQueryResult = NonNullable<Awaited<ReturnType<typeof listTo
 export type ListTopupsQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary List top-up requests for current user
- */
 
 export function useListTopups<TData = Awaited<ReturnType<typeof listTopups>>, TError = ErrorType<ErrorResponse>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTopups>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -810,9 +825,6 @@ export const getCreateTopupUrl = () => {
   return `/api/topups`
 }
 
-/**
- * @summary Submit a credit top-up request with TON transaction hash
- */
 export const createTopup = async (topupInput: TopupInput, options?: RequestInit): Promise<Topup> => {
 
   return customFetch<Topup>(getCreateTopupUrl(),
@@ -859,10 +871,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type CreateTopupMutationBody = BodyType<TopupInput>
     export type CreateTopupMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Submit a credit top-up request with TON transaction hash
- */
-export const useCreateTopup = <TError = ErrorType<ErrorResponse>,
+    export const useCreateTopup = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTopup>>, TError,{data: BodyType<TopupInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof createTopup>>,
@@ -873,6 +882,209 @@ export const useCreateTopup = <TError = ErrorType<ErrorResponse>,
       return useMutation(getCreateTopupMutationOptions(options));
     }
 
+export const getAdminListUsersUrl = () => {
+
+
+
+
+  return `/api/admin/users`
+}
+
+export const adminListUsers = async ( options?: RequestInit): Promise<AdminUser[]> => {
+
+  return customFetch<AdminUser[]>(getAdminListUsersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAdminListUsersQueryKey = () => {
+    return [
+    `/api/admin/users`
+    ] as const;
+    }
+
+
+export const getAdminListUsersQueryOptions = <TData = Awaited<ReturnType<typeof adminListUsers>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminListUsersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListUsers>>> = ({ signal }) => adminListUsers({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type AdminListUsersQueryResult = NonNullable<Awaited<ReturnType<typeof adminListUsers>>>
+export type AdminListUsersQueryError = ErrorType<ErrorResponse>
+
+
+
+export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getAdminListUsersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getAdminUpdateUserUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/users/${id}`
+}
+
+export const adminUpdateUser = async (id: number,
+    adminUserUpdate: AdminUserUpdate, options?: RequestInit): Promise<AdminUser> => {
+
+  return customFetch<AdminUser>(getAdminUpdateUserUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminUserUpdate,)
+  }
+);}
+
+
+
+
+export const getAdminUpdateUserMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: number;data: BodyType<AdminUserUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: number;data: BodyType<AdminUserUpdate>}, TContext> => {
+
+const mutationKey = ['adminUpdateUser'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminUpdateUser>>, {id: number;data: BodyType<AdminUserUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  adminUpdateUser(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminUpdateUserMutationResult = NonNullable<Awaited<ReturnType<typeof adminUpdateUser>>>
+    export type AdminUpdateUserMutationBody = BodyType<AdminUserUpdate>
+    export type AdminUpdateUserMutationError = ErrorType<ErrorResponse>
+
+    export const useAdminUpdateUser = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: number;data: BodyType<AdminUserUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof adminUpdateUser>>,
+        TError,
+        {id: number;data: BodyType<AdminUserUpdate>},
+        TContext
+      > => {
+      return useMutation(getAdminUpdateUserMutationOptions(options));
+    }
+
+export const getAdminAdjustCreditsUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/users/${id}/credits`
+}
+
+export const adminAdjustCredits = async (id: number,
+    creditsAdjust: CreditsAdjust, options?: RequestInit): Promise<AdminUser> => {
+
+  return customFetch<AdminUser>(getAdminAdjustCreditsUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      creditsAdjust,)
+  }
+);}
+
+
+
+
+export const getAdminAdjustCreditsMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminAdjustCredits>>, TError,{id: number;data: BodyType<CreditsAdjust>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminAdjustCredits>>, TError,{id: number;data: BodyType<CreditsAdjust>}, TContext> => {
+
+const mutationKey = ['adminAdjustCredits'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminAdjustCredits>>, {id: number;data: BodyType<CreditsAdjust>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  adminAdjustCredits(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminAdjustCreditsMutationResult = NonNullable<Awaited<ReturnType<typeof adminAdjustCredits>>>
+    export type AdminAdjustCreditsMutationBody = BodyType<CreditsAdjust>
+    export type AdminAdjustCreditsMutationError = ErrorType<ErrorResponse>
+
+    export const useAdminAdjustCredits = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminAdjustCredits>>, TError,{id: number;data: BodyType<CreditsAdjust>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof adminAdjustCredits>>,
+        TError,
+        {id: number;data: BodyType<CreditsAdjust>},
+        TContext
+      > => {
+      return useMutation(getAdminAdjustCreditsMutationOptions(options));
+    }
+
 export const getAdminListTopupsUrl = () => {
 
 
@@ -881,9 +1093,6 @@ export const getAdminListTopupsUrl = () => {
   return `/api/admin/topups`
 }
 
-/**
- * @summary Admin - list all pending top-up requests
- */
 export const adminListTopups = async ( options?: RequestInit): Promise<TopupWithUser[]> => {
 
   return customFetch<TopupWithUser[]>(getAdminListTopupsUrl(),
@@ -928,9 +1137,6 @@ export type AdminListTopupsQueryResult = NonNullable<Awaited<ReturnType<typeof a
 export type AdminListTopupsQueryError = ErrorType<ErrorResponse>
 
 
-/**
- * @summary Admin - list all pending top-up requests
- */
 
 export function useAdminListTopups<TData = Awaited<ReturnType<typeof adminListTopups>>, TError = ErrorType<ErrorResponse>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof adminListTopups>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
@@ -958,9 +1164,6 @@ export const getApproveTopupUrl = (id: number,) => {
   return `/api/admin/topups/${id}/approve`
 }
 
-/**
- * @summary Admin - approve a top-up request and credit the user
- */
 export const approveTopup = async (id: number, options?: RequestInit): Promise<Topup> => {
 
   return customFetch<Topup>(getApproveTopupUrl(id),
@@ -1006,10 +1209,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ApproveTopupMutationError = ErrorType<ErrorResponse>
 
-    /**
- * @summary Admin - approve a top-up request and credit the user
- */
-export const useApproveTopup = <TError = ErrorType<ErrorResponse>,
+    export const useApproveTopup = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof approveTopup>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof approveTopup>>,
@@ -1018,5 +1218,69 @@ export const useApproveTopup = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getApproveTopupMutationOptions(options));
+    }
+
+export const getRejectTopupUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/topups/${id}/reject`
+}
+
+export const rejectTopup = async (id: number, options?: RequestInit): Promise<Topup> => {
+
+  return customFetch<Topup>(getRejectTopupUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getRejectTopupMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rejectTopup>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof rejectTopup>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['rejectTopup'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rejectTopup>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  rejectTopup(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RejectTopupMutationResult = NonNullable<Awaited<ReturnType<typeof rejectTopup>>>
+
+    export type RejectTopupMutationError = ErrorType<ErrorResponse>
+
+    export const useRejectTopup = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rejectTopup>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof rejectTopup>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getRejectTopupMutationOptions(options));
     }
 

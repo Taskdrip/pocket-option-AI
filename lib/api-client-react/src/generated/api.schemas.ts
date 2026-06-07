@@ -34,6 +34,9 @@ export interface User {
   botActive: boolean;
   autoConfirm: boolean;
   isAdmin: boolean;
+  banned: boolean;
+  /** @nullable */
+  pocketOptionId: string | null;
   createdAt: string;
 }
 
@@ -42,9 +45,37 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface AdminUser {
+  id: number;
+  email: string;
+  username: string;
+  credits: number;
+  botActive: boolean;
+  autoConfirm: boolean;
+  isAdmin: boolean;
+  banned: boolean;
+  /** @nullable */
+  pocketOptionId: string | null;
+  totalTrades: number;
+  createdAt: string;
+}
+
+export interface AdminUserUpdate {
+  banned?: boolean;
+  isAdmin?: boolean;
+}
+
+export interface CreditsAdjust {
+  credits: number;
+}
+
 export interface BotStatusUpdate {
   botActive?: boolean;
   autoConfirm?: boolean;
+}
+
+export interface PocketOptionUpdate {
+  pocketOptionId: string;
 }
 
 export type SignalDirection = typeof SignalDirection[keyof typeof SignalDirection];
@@ -126,9 +157,18 @@ export const TopupInputPackage = {
   NUMBER_1000: '1000',
 } as const;
 
+export type TopupInputCurrency = typeof TopupInputCurrency[keyof typeof TopupInputCurrency];
+
+
+export const TopupInputCurrency = {
+  ton: 'ton',
+  usdt: 'usdt',
+} as const;
+
 export interface TopupInput {
   package: TopupInputPackage;
   txHash: string;
+  currency: TopupInputCurrency;
 }
 
 export type TopupStatus = typeof TopupStatus[keyof typeof TopupStatus];
@@ -148,6 +188,7 @@ export interface Topup {
   usdAmount: number;
   tonAmount: number;
   txHash: string;
+  currency: string;
   status: TopupStatus;
   createdAt: string;
 }
@@ -171,6 +212,7 @@ export interface TopupWithUser {
   usdAmount: number;
   tonAmount: number;
   txHash: string;
+  currency: string;
   status: TopupWithUserStatus;
   createdAt: string;
 }

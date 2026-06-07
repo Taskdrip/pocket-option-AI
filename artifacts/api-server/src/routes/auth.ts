@@ -16,6 +16,8 @@ function toPublicUser(user: typeof usersTable.$inferSelect) {
     botActive: user.botActive,
     autoConfirm: user.autoConfirm,
     isAdmin: user.isAdmin,
+    banned: user.banned,
+    pocketOptionId: user.pocketOptionId ?? null,
     createdAt: user.createdAt,
   };
 }

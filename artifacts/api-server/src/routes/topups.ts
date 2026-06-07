@@ -42,6 +42,7 @@ router.post("/topups", requireAuth, async (req: AuthRequest, res): Promise<void>
     usdAmount: pkg.usdAmount,
     tonAmount: pkg.tonAmount,
     txHash: parsed.data.txHash,
+    currency: parsed.data.currency,
     status: "pending",
   }).returning();
 

@@ -2,18 +2,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useGetMe, useListTopups, useCreateTopup, getListTopupsQueryKey, getGetMeQueryKey } from "@workspace/api-client-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { useGetMe, useListTopups, useCreateTopup, getListTopupsQueryKey } from "@workspace/api-client-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Wallet as WalletIcon, Copy, ExternalLink, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Wallet as WalletIcon, Copy, Clock, CheckCircle, XCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
-const WALLET_ADDRESS = "UQBxyz1234567890ABCDEFG_TonWalletAddress";
+const ADDRESSES = {
+  ton: "UQBxyz1234567890ABCDEFG_TonWalletAddress",
+  usdt: "TRX_USDT_WalletAddress_123456789ABCDEF"
+};
 
 const PACKAGES = [
   { id: "100", credits: 100, usd: 10, ton: 2 },
@@ -33,6 +37,7 @@ export default function Wallet() {
   const createTopup = useCreateTopup();
 
   const [selectedPackage, setSelectedPackage] = useState<string>("500");
+  const [selectedCurrency, setSelectedCurrency] = useState<"ton" | "usdt">("usdt");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,7 +51,8 @@ export default function Wallet() {
       { 
         data: { 
           package: selectedPackage as "100" | "500" | "1000", 
-          txHash: values.txHash 
+          txHash: values.txHash,
+          currency: selectedCurrency as any
         } 
       },
       {
@@ -70,7 +76,7 @@ export default function Wallet() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(WALLET_ADDRESS);
+    navigator.clipboard.writeText(ADDRESSES[selectedCurrency]);
     toast({
       title: "Address Copied",
       description: "Wallet address copied to clipboard",
@@ -78,6 +84,7 @@ export default function Wallet() {
   };
 
   const activePackage = PACKAGES.find(p => p.id === selectedPackage);
+  const currentAddress = ADDRESSES[selectedCurrency];
 
   return (
     <div className="space-y-6">
@@ -99,8 +106,16 @@ export default function Wallet() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
           <Card className="border-border/50 bg-card/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="font-mono text-lg">1. Select Package</CardTitle>
+            <CardHeader className="pb-4">
+              <div className="flex justify-between items-center">
+                <CardTitle className="font-mono text-lg">1. Select Package</CardTitle>
+                <Tabs value={selectedCurrency} onValueChange={(v: any) => setSelectedCurrency(v)} className="w-auto">
+                  <TabsList className="h-8 p-1">
+                    <TabsTrigger value="usdt" className="text-xs font-mono px-3"><span className="text-green-500 mr-1 font-bold">USDT</span> (TRC20)</TabsTrigger>
+                    <TabsTrigger value="ton" className="text-xs font-mono px-3"><span className="text-blue-500 mr-1 font-bold">TON</span></TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-3">
@@ -116,10 +131,18 @@ export default function Wallet() {
                   >
                     <div>
                       <div className="font-mono font-bold text-lg">{pkg.credits} CREDITS</div>
-                      <div className="font-mono text-sm text-muted-foreground">${pkg.usd} USD</div>
+                      {selectedCurrency === 'usdt' ? (
+                        <div className="font-mono text-sm text-muted-foreground">Amount in USD</div>
+                      ) : (
+                        <div className="font-mono text-sm text-muted-foreground">${pkg.usd} USD</div>
+                      )}
                     </div>
                     <div className="text-right">
-                      <div className="font-mono font-bold text-primary">{pkg.ton} TON</div>
+                      {selectedCurrency === 'usdt' ? (
+                        <div className="font-mono font-bold text-green-500">{pkg.usd} USDT</div>
+                      ) : (
+                        <div className="font-mono font-bold text-blue-500">{pkg.ton} TON</div>
+                      )}
                       {pkg.id === "1000" && <Badge className="mt-1 font-mono text-[10px] py-0">BEST VALUE</Badge>}
                     </div>
                   </div>
@@ -130,16 +153,16 @@ export default function Wallet() {
 
           <Card className="border-border/50 bg-card/50 backdrop-blur">
             <CardHeader>
-              <CardTitle className="font-mono text-lg">2. Send TON Payment</CardTitle>
+              <CardTitle className="font-mono text-lg">2. Send {selectedCurrency.toUpperCase()} Payment</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Send exactly <strong className="text-foreground">{activePackage?.ton} TON</strong> to the network address below.
+                Send exactly <strong className="text-foreground">{selectedCurrency === 'usdt' ? activePackage?.usd : activePackage?.ton} {selectedCurrency.toUpperCase()}</strong> to the {selectedCurrency === 'usdt' ? 'TRC20' : 'TON'} network address below.
               </p>
               
               <div className="p-3 bg-background rounded border border-border flex items-center justify-between">
-                <code className="text-sm text-primary break-all">{WALLET_ADDRESS}</code>
-                <Button variant="ghost" size="icon" onClick={copyToClipboard}>
+                <code className="text-xs text-primary break-all">{currentAddress}</code>
+                <Button variant="ghost" size="icon" onClick={copyToClipboard} className="shrink-0 ml-2">
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
@@ -152,7 +175,7 @@ export default function Wallet() {
             <CardHeader>
               <CardTitle className="font-mono text-lg">3. Submit Transaction Hash</CardTitle>
               <CardDescription className="font-mono text-xs">
-                After sending TON, paste the transaction hash here for verification
+                After sending payment, paste the transaction hash here for verification
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -203,6 +226,7 @@ export default function Wallet() {
                 <TableRow className="border-border/50 hover:bg-transparent">
                   <TableHead className="font-mono text-xs">PACKAGE</TableHead>
                   <TableHead className="font-mono text-xs">AMOUNT</TableHead>
+                  <TableHead className="font-mono text-xs">CURRENCY</TableHead>
                   <TableHead className="font-mono text-xs">TX HASH</TableHead>
                   <TableHead className="font-mono text-xs">STATUS</TableHead>
                   <TableHead className="font-mono text-xs text-right">DATE</TableHead>
@@ -212,7 +236,16 @@ export default function Wallet() {
                 {topups.map((req) => (
                   <TableRow key={req.id} className="border-border/50 hover:bg-card">
                     <TableCell className="font-mono font-medium">{req.credits} CRD</TableCell>
-                    <TableCell className="font-mono">{req.tonAmount} TON</TableCell>
+                    <TableCell className="font-mono">
+                      {req.currency === 'usdt' ? `${req.usdAmount || 0}` : `${req.tonAmount}`}
+                    </TableCell>
+                    <TableCell className="font-mono">
+                      {req.currency === 'usdt' ? (
+                        <span className="text-green-500 font-bold text-xs">USDT</span>
+                      ) : (
+                        <span className="text-blue-500 font-bold text-xs">TON</span>
+                      )}
+                    </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground max-w-[150px] truncate">
                       {req.txHash}
                     </TableCell>

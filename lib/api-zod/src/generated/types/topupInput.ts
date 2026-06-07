@@ -5,9 +5,11 @@
  * AI Pocket Trader API
  * OpenAPI spec version: 0.1.0
  */
+import type { TopupInputCurrency } from './topupInputCurrency';
 import type { TopupInputPackage } from './topupInputPackage';
 
 export interface TopupInput {
   package: TopupInputPackage;
   txHash: string;
+  currency: TopupInputCurrency;
 }

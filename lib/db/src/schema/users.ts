@@ -11,6 +11,8 @@ export const usersTable = pgTable("users", {
   botActive: boolean("bot_active").notNull().default(false),
   autoConfirm: boolean("auto_confirm").notNull().default(false),
   isAdmin: boolean("is_admin").notNull().default(false),
+  banned: boolean("banned").notNull().default(false),
+  pocketOptionId: text("pocket_option_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });

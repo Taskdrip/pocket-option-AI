@@ -6,17 +6,22 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './adminUser';
+export * from './adminUserUpdate';
 export * from './authResponse';
 export * from './botStatusUpdate';
+export * from './creditsAdjust';
 export * from './errorResponse';
 export * from './getSignalParams';
 export * from './healthStatus';
 export * from './loginInput';
+export * from './pocketOptionUpdate';
 export * from './registerInput';
 export * from './signal';
 export * from './signalDirection';
 export * from './topup';
 export * from './topupInput';
+export * from './topupInputCurrency';
 export * from './topupInputPackage';
 export * from './topupStatus';
 export * from './topupWithUser';

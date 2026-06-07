@@ -10,6 +10,7 @@ export const topupsTable = pgTable("topups", {
   usdAmount: real("usd_amount").notNull(),
   tonAmount: real("ton_amount").notNull(),
   txHash: text("tx_hash").notNull(),
+  currency: text("currency").notNull().default("ton"), // ton | usdt
   status: text("status").notNull().default("pending"), // pending | approved | rejected
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

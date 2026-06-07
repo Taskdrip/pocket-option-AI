@@ -15,6 +15,7 @@ export interface Topup {
   usdAmount: number;
   tonAmount: number;
   txHash: string;
+  currency: string;
   status: TopupStatus;
   createdAt: Date;
 }

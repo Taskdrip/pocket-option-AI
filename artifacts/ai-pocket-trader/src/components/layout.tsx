@@ -110,10 +110,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="p-4 border-t border-border">
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              <span>Disconnect</span>
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={handleLogout}>
+                <LogOut className="w-4 h-4 mr-2" />
+                <span>Disconnect</span>
+              </Button>
+              <div className="px-2 pb-1 text-center">
+                <Link href="/admin-login" className="text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors">
+                  [ Admin Portal ]
+                </Link>
+              </div>
+            </div>
           </SidebarFooter>
         </Sidebar>
         <main className="flex-1 overflow-y-auto">

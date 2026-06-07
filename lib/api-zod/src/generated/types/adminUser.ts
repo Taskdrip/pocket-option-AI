@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface User {
+export interface AdminUser {
   id: number;
   email: string;
   username: string;
@@ -17,5 +17,6 @@ export interface User {
   banned: boolean;
   /** @nullable */
   pocketOptionId: string | null;
+  totalTrades: number;
   createdAt: Date;
 }

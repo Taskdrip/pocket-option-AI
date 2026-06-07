@@ -9,19 +9,12 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: auth
-    description: Authentication operations
   - name: users
-    description: User profile operations
   - name: signals
-    description: AI signal operations
   - name: trades
-    description: Trade operations
   - name: topups
-    description: Credit top-up operations
   - name: admin
-    description: Admin operations
 
 paths:
   /healthz:
@@ -41,7 +34,6 @@ paths:
     post:
       operationId: register
       tags: [auth]
-      summary: Register a new user
       requestBody:
         required: true
         content:
@@ -62,7 +54,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "409":
-          description: Email already in use
+          description: Conflict
           content:
             application/json:
               schema:
@@ -72,7 +64,6 @@ paths:
     post:
       operationId: login
       tags: [auth]
-      summary: Login
       requestBody:
         required: true
         content:
@@ -87,7 +78,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -97,7 +88,6 @@ paths:
     get:
       operationId: getMe
       tags: [users]
-      summary: Get current user profile
       responses:
         "200":
           description: OK
@@ -116,7 +106,6 @@ paths:
     patch:
       operationId: updateBotStatus
       tags: [users]
-      summary: Toggle bot on/off and auto-confirm
       requestBody:
         required: true
         content:
@@ -137,11 +126,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /users/me/pocket-option:
+    patch:
+      operationId: updatePocketOption
+      tags: [users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PocketOptionUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /signals:
     get:
       operationId: getSignal
       tags: [signals]
-      summary: Get current AI signal for an asset/timeframe
       parameters:
         - name: asset
           in: query
@@ -171,7 +183,6 @@ paths:
     get:
       operationId: listTrades
       tags: [trades]
-      summary: List trade history for the current user
       responses:
         "200":
           description: OK
@@ -190,7 +201,6 @@ paths:
     post:
       operationId: executeTrade
       tags: [trades]
-      summary: Execute a trade (deducts 1 credit)
       requestBody:
         required: true
         content:
@@ -205,7 +215,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Trade"
         "400":
-          description: Not enough credits or bad request
+          description: Bad request
           content:
             application/json:
               schema:
@@ -221,7 +231,6 @@ paths:
     get:
       operationId: getTradeStats
       tags: [trades]
-      summary: Get trading statistics for current user
       responses:
         "200":
           description: OK
@@ -240,7 +249,6 @@ paths:
     get:
       operationId: listTopups
       tags: [topups]
-      summary: List top-up requests for current user
       responses:
         "200":
           description: OK
@@ -259,7 +267,6 @@ paths:
     post:
       operationId: createTopup
       tags: [topups]
-      summary: Submit a credit top-up request with TON transaction hash
       requestBody:
         required: true
         content:
@@ -286,11 +293,120 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/users/{id}:
+    patch:
+      operationId: adminUpdateUser
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/users/{id}/credits:
+    patch:
+      operationId: adminAdjustCredits
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreditsAdjust"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /admin/topups:
     get:
       operationId: adminListTopups
       tags: [admin]
-      summary: Admin - list all pending top-up requests
       responses:
         "200":
           description: OK
@@ -317,7 +433,6 @@ paths:
     post:
       operationId: approveTopup
       tags: [admin]
-      summary: Admin - approve a top-up request and credit the user
       parameters:
         - name: id
           in: path
@@ -345,6 +460,36 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/topups/{id}/reject:
+    post:
+      operationId: rejectTopup
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topup"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -401,7 +546,7 @@ components:
 
     User:
       type: object
-      required: [id, email, username, credits, botActive, autoConfirm, isAdmin, createdAt]
+      required: [id, email, username, credits, botActive, autoConfirm, isAdmin, banned, pocketOptionId, createdAt]
       properties:
         id:
           type: integer
@@ -417,9 +562,56 @@ components:
           type: boolean
         isAdmin:
           type: boolean
+        banned:
+          type: boolean
+        pocketOptionId:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time
+
+    AdminUser:
+      type: object
+      required: [id, email, username, credits, botActive, autoConfirm, isAdmin, banned, pocketOptionId, totalTrades, createdAt]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        username:
+          type: string
+        credits:
+          type: integer
+        botActive:
+          type: boolean
+        autoConfirm:
+          type: boolean
+        isAdmin:
+          type: boolean
+        banned:
+          type: boolean
+        pocketOptionId:
+          type: ["string", "null"]
+        totalTrades:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    AdminUserUpdate:
+      type: object
+      properties:
+        banned:
+          type: boolean
+        isAdmin:
+          type: boolean
+
+    CreditsAdjust:
+      type: object
+      required: [credits]
+      properties:
+        credits:
+          type: integer
 
     BotStatusUpdate:
       type: object
@@ -428,6 +620,13 @@ components:
           type: boolean
         autoConfirm:
           type: boolean
+
+    PocketOptionUpdate:
+      type: object
+      required: [pocketOptionId]
+      properties:
+        pocketOptionId:
+          type: string
 
     Signal:
       type: object
@@ -506,17 +705,20 @@ components:
 
     TopupInput:
       type: object
-      required: [package, txHash]
+      required: [package, txHash, currency]
       properties:
         package:
           type: string
           enum: ["100", "500", "1000"]
         txHash:
           type: string
+        currency:
+          type: string
+          enum: [ton, usdt]
 
     Topup:
       type: object
-      required: [id, userId, package, credits, usdAmount, tonAmount, txHash, status, createdAt]
+      required: [id, userId, package, credits, usdAmount, tonAmount, txHash, currency, status, createdAt]
       properties:
         id:
           type: integer
@@ -532,6 +734,8 @@ components:
           type: number
         txHash:
           type: string
+        currency:
+          type: string
         status:
           type: string
           enum: [pending, approved, rejected]
@@ -541,7 +745,7 @@ components:
 
     TopupWithUser:
       type: object
-      required: [id, userId, username, email, package, credits, usdAmount, tonAmount, txHash, status, createdAt]
+      required: [id, userId, username, email, package, credits, usdAmount, tonAmount, txHash, currency, status, createdAt]
       properties:
         id:
           type: integer
@@ -560,6 +764,8 @@ components:
         tonAmount:
           type: number
         txHash:
+          type: string
+        currency:
           type: string
         status:
           type: string

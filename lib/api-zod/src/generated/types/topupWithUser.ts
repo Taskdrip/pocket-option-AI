@@ -17,6 +17,7 @@ export interface TopupWithUser {
   usdAmount: number;
   tonAmount: number;
   txHash: string;
+  currency: string;
   status: TopupWithUserStatus;
   createdAt: Date;
 }
