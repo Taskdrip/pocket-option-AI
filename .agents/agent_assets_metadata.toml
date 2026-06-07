@@ -6,3 +6,15 @@ id = "Z04W-LCdKrtGjx0Jg_Trg"
 uri = "file://artifacts/pocket-option-ai/src/assets/images/hero-robot.png"
 type = "image"
 title = "Dramatic AI trading robot"
+
+[[generated]]
+id = "nxBPoYMN76jg4j7kHsE7I"
+uri = "file://artifacts/pocket-autopilot/src/assets/images/hero-chart.png"
+type = "image"
+title = "Trading terminal dashboard interface"
+
+[[generated]]
+id = "a4mANMOMPxV1DMKwcj3mQ"
+uri = "file://artifacts/pocket-autopilot/src/assets/images/ai-bot.png"
+type = "image"
+title = "AI bot visualization brain"
