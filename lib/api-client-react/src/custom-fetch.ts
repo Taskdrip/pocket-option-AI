@@ -358,6 +358,11 @@ export async function customFetch<T = unknown>(
     }
   }
 
+  const token = typeof window !== 'undefined' ? localStorage.getItem('apt_token') : null;
+  if (token && !headers.has("authorization")) {
+    headers.set("authorization", `Bearer ${token}`);
+  }
+
   const requestInfo = { method, url: resolveUrl(input) };
 
   const response = await fetch(input, { ...init, method, headers });

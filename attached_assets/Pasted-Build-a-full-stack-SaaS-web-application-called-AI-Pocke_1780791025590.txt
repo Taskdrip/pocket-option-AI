@@ -1,0 +1,224 @@
+Build a full-stack SaaS web application called **“AI Pocket Trader”** with a clean modern UI and working backend.
+
+TECH STACK:
+
+* Backend: Python (FastAPI)
+* Frontend: HTML + TailwindCSS + Vanilla JavaScript
+* Database: SQLite (for MVP)
+* Must run fully on Replit
+
+---
+
+CORE FEATURES:
+
+1. AUTHENTICATION SYSTEM
+
+* User registration and login
+* Hash passwords securely
+* JWT authentication
+* Each new user starts with **100 free credits**
+
+---
+
+2. DASHBOARD UI (MODERN DARK THEME)
+
+Create a responsive dashboard with:
+
+LEFT SIDEBAR:
+
+* Dashboard
+* AI Signals
+* Auto Trading
+* Trade History
+* Wallet (Top-up)
+* Settings
+
+MAIN PANEL:
+
+* Show:
+
+  * Credits balance
+  * Bot status (ON/OFF toggle)
+  * Auto-confirm toggle (ON/OFF)
+
+TRADING PANEL:
+
+* Select asset (EURUSD, BTC, etc.)
+* Select timeframe (1m, 5m)
+* Enter trade amount
+* Button: “Start Auto Trading”
+
+RIGHT PANEL:
+
+* Live AI signal display:
+
+  * BUY / SELL / HOLD
+  * Confidence %
+  * Countdown timer before execution
+
+---
+
+3. AI SIGNAL ENGINE (MVP)
+
+Implement a simple strategy using:
+
+* RSI
+* EMA (9 and 21)
+
+Logic:
+
+* If RSI < 30 and EMA9 > EMA21 → BUY
+* If RSI > 70 and EMA9 < EMA21 → SELL
+* Else HOLD
+
+Also return a confidence score (50–90%)
+
+Simulate market data using random values for MVP.
+
+---
+
+4. AUTO-TRADING SYSTEM (SAFE MODE)
+
+Implement a loop that:
+
+* Runs every 10 seconds
+* Fetches AI signal
+* If confidence >= 75:
+
+  * Show countdown (5 seconds)
+  * If auto-confirm is ON:
+    execute trade automatically
+  * Else:
+    wait for user click
+
+Trade execution should:
+
+* Deduct 1 credit
+* Simulate result (win/loss randomly)
+* Store trade in database
+
+If credits = 0:
+
+* Stop auto trading
+* Show popup: “You need to top up credits”
+
+---
+
+5. CREDIT SYSTEM
+
+* 1 trade = 1 credit
+* Prevent trading if credits = 0
+* Show credits clearly on dashboard
+
+---
+
+6. WALLET / TOP-UP SYSTEM
+
+Create a “Top-Up Credits” page:
+
+Options:
+
+* 100 credits = $10
+* 500 credits = $45
+* 1000 credits = $80
+
+When user selects credits:
+
+* Calculate USD value
+* Convert to TON (use fixed rate for MVP, e.g. 1 TON = $5)
+
+Display:
+
+* TON amount
+* Wallet address (hardcoded)
+* Instructions
+
+User submits:
+
+* Transaction hash (text input)
+
+Store in database as:
+
+* status = pending
+
+---
+
+7. ADMIN PANEL (SIMPLE ROUTE)
+
+Create an admin route:
+
+* View all pending transactions
+* Approve button
+
+When approved:
+
+* Add credits to user
+* Mark transaction as “approved”
+
+---
+
+8. TRADE HISTORY
+
+Display:
+
+* Asset
+* Direction (BUY/SELL)
+* Amount
+* Result (win/loss)
+* Timestamp
+
+---
+
+9. BACKEND STRUCTURE
+
+Organize code into:
+
+* main.py
+* models.py
+* database.py
+* auth.py
+* trading.py
+
+Use SQLAlchemy ORM
+
+---
+
+10. FRONTEND REQUIREMENTS
+
+* Use TailwindCSS CDN
+* Clean modern dark UI
+* Smooth transitions
+* Responsive layout
+* Use fetch() to call backend APIs
+
+---
+
+11. SECURITY
+
+* Validate all inputs
+* Protect routes with JWT
+* Do not expose sensitive data
+
+---
+
+12. RUNNING THE APP
+
+* Use uvicorn to run FastAPI
+* Serve frontend from /static folder
+
+---
+
+FINAL RESULT:
+
+A working SaaS MVP where users can:
+
+* Sign up and log in
+* Get 100 free credits
+* View AI trading signals
+* Enable auto-trading (auto-confirm mode)
+* Simulate trades
+* Spend credits per trade
+* Top up credits via TON (manual system)
+* Admin approves payments
+
+Ensure the project runs immediately after generation without errors.
