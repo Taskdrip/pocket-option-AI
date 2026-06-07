@@ -6,6 +6,7 @@ import signalsRouter from "./signals";
 import tradesRouter from "./trades";
 import topupsRouter from "./topups";
 import adminRouter from "./admin";
+import pocketOptionRouter from "./pocket-option";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(signalsRouter);
 router.use(tradesRouter);
 router.use(topupsRouter);
 router.use(adminRouter);
+router.use(pocketOptionRouter);
 
 export default router;

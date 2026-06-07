@@ -17,6 +17,11 @@ function toPublicUser(user: typeof usersTable.$inferSelect) {
     isAdmin: user.isAdmin,
     banned: user.banned,
     pocketOptionId: user.pocketOptionId ?? null,
+    poEmail: user.poEmail ?? null,
+    poAccountType: user.poAccountType ?? "demo",
+    poLiveBalance: user.poLiveBalance ?? 0,
+    poDemoBalance: user.poDemoBalance ?? 10000,
+    poConnected: user.poConnected ?? false,
     createdAt: user.createdAt,
   };
 }
